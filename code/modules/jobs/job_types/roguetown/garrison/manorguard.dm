@@ -215,7 +215,6 @@
 			r_hand = /obj/item/rogueweapon/sword
 			H.adjust_skillrank_up_to(/datum/skill/combat/swords, 4, TRUE)
 		if("Dagger")
-			r_hand = /obj/item/rogueweapon/huntingknife/idagger/steel
 			H.adjust_skillrank_up_to(/datum/skill/combat/knives, 4, TRUE)
 		if("Trusty Cudgel")
 			H.adjust_skillrank_up_to(/datum/skill/combat/maces, 4, TRUE)
