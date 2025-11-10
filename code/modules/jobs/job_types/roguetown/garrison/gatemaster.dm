@@ -22,6 +22,10 @@
 	round_contrib_points = 3
 	social_rank = SOCIAL_RANK_YEOMAN
 
+	virtue_restrictions = list(
+		/datum/virtue/utility/failed_squire,
+		/datum/virtue/utility/blacksmith, // we don't want you repairing your stuff in combat, sorry...
+	)
 	cmode_music = 'sound/music/combat_guard.ogg'
 
 	job_traits = list(TRAIT_GUARDSMAN, TRAIT_STEELHEARTED, TRAIT_MEDIUMARMOR)
