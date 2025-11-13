@@ -114,12 +114,11 @@ GLOBAL_LIST_EMPTY(created_sound_groups)
 	on_start()
 
 /datum/looping_sound/proc/stop(null_parent)
-	if(!stopped)
-		stopped = TRUE
-		if(null_parent)
-			set_parent(null)
-		on_stop()
-		loop_started = FALSE
+	stopped = TRUE
+	if(null_parent)
+		set_parent(null)
+	on_stop()
+	loop_started = FALSE
 //		if(!timerid)
 //			return
 //		deltimer(timerid)
