@@ -71,7 +71,7 @@
 
 	accuracy_roll = prob(chance2hit)
 	if(accuracy_roll)
-		if(check_zone(zone)) == zone
+		if(check_zone(zone) == zone)
 			return zone
 		else
 			precision_roll = prob(chance2hit)
