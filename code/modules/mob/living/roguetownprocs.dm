@@ -69,7 +69,7 @@
 	var/combined_whiff = (chance2hit * user.STAPER * 0.05) / 100
 
 	if(check_zone(zone) == zone)
-		prob(chance2hit) ? accuracy_roll = TRUE : accuracy_roll = FALSE	
+		accuracy_roll = prob(chance2hit)	
 		if(accuracy_roll)
 			return zone
 		else
@@ -77,11 +77,11 @@
 				to_chat(user, span_warning("Accuracy fail! [chance2hit]%"))
 			return BODY_ZONE_CHEST
 	else
-		prob(chance2hit - 10) ? precision_roll = TRUE : precision_roll = FALSE
+		precision_roll = prob(chance2hit - 10)
 		if(precision_roll)
 			return zone
 		else 
-			prob((chance2hit) * user.STAPER * 0.05) ? whiff_roll = TRUE : whiff_roll = FALSE
+			whiff_roll = prob((chance2hit) * user.STAPER * 0.05)
 			if(whiff_roll)
 				if(user.client?.prefs.showrolls)
 					to_chat(user, span_warning("Precision fail. [chance2hit - 10]%. Roll to hit limb hit: [combined_whiff]%"))
