@@ -281,28 +281,9 @@ LICH SKELETONS
 		H.dna.species.soundpack_m = new /datum/voicepack/skeleton()
 		H.dna.species.soundpack_f = new /datum/voicepack/skeleton()
 //Skeletonizes our body
-	var/obj/item/bodypart/O = H.get_bodypart(BODY_ZONE_R_ARM)
-	if(O)
-		O.drop_limb()
-		qdel(O)
-	O = H.get_bodypart(BODY_ZONE_L_ARM)
-	if(O)
-		O.drop_limb()
-		qdel(O)
-	H.regenerate_limb(BODY_ZONE_R_ARM)
-	H.regenerate_limb(BODY_ZONE_L_ARM)
-	H.base_intents = list(INTENT_HELP, INTENT_DISARM, INTENT_GRAB, /datum/intent/simple/claw)
-	H.update_a_intents()
-	for (var/obj/item/bodypart/B in H.bodyparts)
-		B.skeletonize(FALSE)
-//Replace_eyes proc from the lich.dm, Gives us undead eyes since we're a skeleton.
-	var/obj/item/organ/eyes/eyes = H.getorganslot(ORGAN_SLOT_EYES)
-	if(eyes)
-		eyes.Remove(H, TRUE)
-		QDEL_NULL(eyes)
-	eyes = new /obj/item/organ/eyes/night_vision/zombie
-	eyes.Insert(H)
-// Last touches. Sets our name, faction, and deletes any char flaws from our preferences.
+	H.skeletonize(FALSE)
+	H.skele_look()
+	H.grant_undead_eyes()
 	H.ambushable = FALSE
 	if(H.charflaw)
 		QDEL_NULL(H.charflaw)
@@ -310,13 +291,8 @@ LICH SKELETONS
 	H.faction = list("undead")
 	H.name = "Skeleton"
 	H.real_name = "Skeleton"
-// Skelelook proc from lich.dm . Updates our appearance
-	H.hairstyle = "Bald"
-	H.facial_hairstyle = "Shaved"
-	H.underwear = "Nude"
-	H.update_body()
-	H.update_hair()
-	H.update_body_parts(redraw = TRUE)
+
+
 //Adds our skeleton traits, then allows us to choose a new name, pronouns, and body frame. Also gives us a spell to explode ourselves if we get stuck.
 	ADD_TRAIT(H, TRAIT_NOMOOD, TRAIT_GENERIC)
 	ADD_TRAIT(H, TRAIT_INFINITE_STAMINA, TRAIT_GENERIC)
