@@ -12,14 +12,18 @@
 	action_icon_state = "shapeshift"
 	associated_skill = /datum/skill/magic/druidic
 	chargetime = 5 SECONDS
-	die_with_shapeshifted_form = FALSE
-	revert_on_death = TRUE  
-	show_true_name = FALSE  
-	shapeshift_type = /mob/living/carbon/human/species/wildshape/dendormole
 	devotion_cost = 200
-	convert_damage = TRUE
-	do_gibs = FALSE
-	shifted_speed_increase = -1.3
+
+/obj/effect/proc_holder/spell/targeted/shapeshift/dendormole/cast(list/targets, mob/user = usr)
+	// Use wildshape transformation system instead of shapeshift
+	if(!istype(user, /mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = user
+	if(!H.mind)
+		return
+	// Transform using wildshape system
+	H.wildshape_transformation(/mob/living/carbon/human/species/wildshape/dendormole)
+	return TRUE
 
 /obj/effect/proc_holder/spell/targeted/shapeshift/mireboi
 	name = "Crawler Form"
@@ -35,11 +39,15 @@
 	action_icon_state = "shapeshift"
 	associated_skill = /datum/skill/magic/holy
 	chargetime = 10 SECONDS
-	die_with_shapeshifted_form = FALSE
-	revert_on_death = TRUE  
-	show_true_name = FALSE  
-	shapeshift_type = /mob/living/carbon/human/species/wildshape/mirecrawler
 	devotion_cost = 100
-	convert_damage = TRUE
-	do_gibs = FALSE
-	shifted_speed_increase = 0.6
+
+/obj/effect/proc_holder/spell/targeted/shapeshift/mireboi/cast(list/targets, mob/user = usr)
+	// Use wildshape transformation system instead of shapeshift
+	if(!istype(user, /mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = user
+	if(!H.mind)
+		return
+	// Transform using wildshape system
+	H.wildshape_transformation(/mob/living/carbon/human/species/wildshape/mirecrawler)
+	return TRUE

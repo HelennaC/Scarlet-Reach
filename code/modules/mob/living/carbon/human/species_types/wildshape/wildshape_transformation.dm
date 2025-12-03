@@ -1,9 +1,22 @@
+/mob/living/carbon/human/species/wildshape
+	var/datum/devotion/mind_devotion_transfer  // Temporary storage for devotion transfer
+
 /mob/living/carbon/human/species/wildshape/death(gibbed, nocutscene = FALSE)
 	werewolf_untransform(TRUE, gibbed)
 
 /mob/living/carbon/human/proc/wildshape_transformation(shapepath)
 	if(!mind)
 		log_runtime("NO MIND ON [src.name] WHEN TRANSFORMING")
+	
+	// Store who is grabbing us before transformation
+	var/list/grab_data = list() // List of lists: list(grabber, grab_state, tackle_status, was_lying)
+	for(var/obj/item/grabbing/G in src.grabbedby)
+		if(G.grabbee)
+			var/tackle_status = FALSE
+			if(G.grabbee.buckled_mobs && (src in G.grabbee.buckled_mobs))
+				tackle_status = TRUE
+			grab_data += list(list(G.grabbee, G.grab_state, tackle_status, src.lying))
+	
 	Paralyze(1, ignore_canstun = TRUE)
 	for(var/obj/item/I in src)
 		dropItemToGround(I)
@@ -41,6 +54,12 @@
 	W.voice_color = voice_color
 	W.cmode_music_override = cmode_music_override
 	W.cmode_music_override_name = cmode_music_override_name
+	
+	// Transfer devotion datum directly to wildshape form so they can transform back
+	// Must be done BEFORE mind.transfer_to() to avoid context issues
+	var/mob/living/carbon/human/H = src
+	W.devotion = H.devotion
+	
 	mind.transfer_to(W)
 	skills?.known_skills = list()
 	skills?.skill_experience = list()
@@ -53,12 +72,45 @@
 	invisibility = oldinv
 
 	W.gain_inherent_skills()
+	
+	// Restore grabs - make grabbers grab the new wildshape form with same state
+	for(var/list/grab_info in grab_data)
+		var/mob/living/grabber = grab_info[1]
+		var/grab_level = grab_info[2]
+		var/was_tackled = grab_info[3]
+		var/was_lying = grab_info[4]
+		
+		if(grabber && !grabber.stat)
+			grabber.start_pulling(W)
+			
+			// Restore grab level
+			var/obj/item/grabbing/new_grab = grabber.get_active_held_item()
+			if(!istype(new_grab))
+				new_grab = grabber.get_inactive_held_item()
+			if(istype(new_grab) && new_grab.grabbed == W)
+				new_grab.grab_state = grab_level
+				// Restore tackle if they were tackled
+				if(was_tackled && !W.buckled)
+					grabber.buckle_mob(W, force = TRUE)
+				// Restore lying state if they were prone
+				if(was_lying)
+					W.Knockdown(10) // Force them to lay down
 
 /mob/living/carbon/human/proc/wildshape_untransform(dead,gibbed)
 	if(!stored_mob)
 		return
 	if(!mind)
 		log_runtime("NO MIND ON [src.name] WHEN UNTRANSFORMING")
+	
+	// Store who is grabbing us before untransformation
+	var/list/grab_data = list()
+	for(var/obj/item/grabbing/G in src.grabbedby)
+		if(G.grabbee)
+			var/tackle_status = FALSE
+			if(G.grabbee.buckled_mobs && (src in G.grabbee.buckled_mobs))
+				tackle_status = TRUE
+			grab_data += list(list(G.grabbee, G.grab_state, tackle_status, src.lying))
+	
 	Paralyze(1, ignore_canstun = TRUE)
 	for(var/obj/item/W in src)
 		dropItemToGround(W)
@@ -84,6 +136,7 @@
 
 	// Druids keep the exact same spells - they're already in spell_list
 	// The mind.transfer_to() above already carried all spells back
+	// Devotion also transfers automatically with the mind
 	// No need to restore or remove anything
 
 	W.regenerate_icons()
@@ -91,5 +144,28 @@
 	to_chat(W, span_userdanger("I return to my old form."))
 
 	W.stasis = FALSE
+	
+	// Restore grabs - make grabbers grab the restored human form with same state
+	for(var/list/grab_info in grab_data)
+		var/mob/living/grabber = grab_info[1]
+		var/grab_level = grab_info[2]
+		var/was_tackled = grab_info[3]
+		var/was_lying = grab_info[4]
+		
+		if(grabber && !grabber.stat)
+			grabber.start_pulling(W)
+			
+			// Restore grab level
+			var/obj/item/grabbing/new_grab = grabber.get_active_held_item()
+			if(!istype(new_grab))
+				new_grab = grabber.get_inactive_held_item()
+			if(istype(new_grab) && new_grab.grabbed == W)
+				new_grab.grab_state = grab_level
+				// Restore tackle if they were tackled
+				if(was_tackled && !W.buckled)
+					grabber.buckle_mob(W, force = TRUE)
+				// Restore lying state if they were prone
+				if(was_lying)
+					W.Knockdown(10) // Force them to lay down
 
 	qdel(src)

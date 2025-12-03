@@ -15,17 +15,21 @@
 /mob/living/carbon/human/species/wildshape/dendormole/gain_inherent_skills()
 	. = ..()
 	if(src.mind)
+		// Set name from species datum with real name in parentheses
+		var/datum/species/S = race
+		if(S && src.real_name)
+			name = "[S.name] ([src.real_name])"
 		src.adjust_skillrank(/datum/skill/combat/wrestling, 4, TRUE)
-		src.adjust_skillrank(/datum/skill/combat/unarmed, 5, TRUE)
+		src.adjust_skillrank(/datum/skill/combat/unarmed, 3, TRUE)
 		src.adjust_skillrank(/datum/skill/misc/swimming, 2, TRUE)
 		src.adjust_skillrank(/datum/skill/misc/athletics, 3, TRUE)
 		src.adjust_skillrank(/datum/skill/misc/tracking, 4, TRUE) //'Tracker' transformation
 		src.adjust_skillrank(/datum/skill/misc/sneaking, 3, TRUE) //Stalking
 //Give it miracles maybe as well if needed, but this boi is already good
-		src.STASTR = 20
-		src.STACON = 20
-		src.STAPER = 15
-		src.STASPD = 13
+		src.STASTR = 13
+		src.STACON = 14
+		src.STAPER = 12
+		src.STASPD = 8
 
 		AddSpell(new /obj/effect/proc_holder/spell/self/moleclaw)
 		// Set name once on transformation, not every time
@@ -39,17 +43,13 @@
 	inherent_traits = list(
 		TRAIT_KNEESTINGER_IMMUNITY, //All of these are dendorite transformations, they are ALL blessed by dendor
 		TRAIT_STRONGBITE,
-		TRAIT_STEELHEARTED,
-		TRAIT_BREADY, //Ambusher
-		TRAIT_ORGAN_EATER,
+		TRAIT_BREADY, 
 		TRAIT_WILD_EATER,
 		TRAIT_HARDDISMEMBER, //Decapping causes them to bug out, badly, and need admin intervention to fix. Bandaid fix.
 		TRAIT_PIERCEIMMUNE, //Prevents weapon dusting and caltrop effects due to them transforming when killed/stepping on shards.
 		TRAIT_LONGSTRIDER,
 		TRAIT_PERFECT_TRACKER,
 		TRAIT_NOPAINSTUN, //This bad boy ENDVRES
-		TRAIT_NIGHT_VISION,
-		TRAIT_NIGHT_OWL,
 		TRAIT_BIGGUY,
 	)
 	inherent_biotypes = MOB_HUMANOID
@@ -137,7 +137,6 @@
 	force = 30
 	block_chance = 0
 	wdefense = 2
-	blade_dulling = DULLING_SHAFT_WOOD
 	associated_skill = /datum/skill/combat/unarmed
 	wlength = WLENGTH_NORMAL
 	wbalance = WBALANCE_NORMAL
@@ -164,11 +163,11 @@
 	ADD_TRAIT(src, TRAIT_NOEMBED, TRAIT_GENERIC)
 
 /obj/effect/proc_holder/spell/self/moleclaw
-	name = "REDUCE THEM TO DECAY"
-	desc = "!"
+	name = "Burrow Claws"
+	desc = "Extend your digging claws."
 	overlay_state = "claws"
 	antimagic_allowed = TRUE
-	recharge_time = 40 //4 seconds
+	recharge_time = 40
 	ignore_cockblock = TRUE	
 	var/extended = FALSE
 

@@ -81,11 +81,10 @@
 	cast_without_targets = TRUE
 	sound = 'sound/items/dig_shovel.ogg'
 	associated_skill = /datum/skill/magic/holy
-	invocation = "Treefather light the way."
-	invocation_type = "whisper" //can be none, whisper, emote and shout
+	invocation = "Treefather light the way!"
+	invocation_type = "shout"
 	miracle = TRUE
 	devotion_cost = 30
-	miracle = TRUE
 
 /obj/effect/proc_holder/spell/targeted/conjure_glowshroom/cast(list/targets, mob/user = usr)
 	// Prevent wildshape forms from casting
@@ -101,7 +100,7 @@
 	if(!locate(/obj/structure/glowshroom) in target_turf)
 		new /obj/structure/glowshroom/dendorite(target_turf)
 
-	if(!locate(/obj/structure/glowshroom in target_turf_two))
+	if(!locate(/obj/structure/glowshroom) in target_turf_two)
 		new /obj/structure/glowshroom/dendorite(target_turf_two)
 
 	if(!locate(/obj/structure/glowshroom) in target_turf_three)

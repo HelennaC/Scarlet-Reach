@@ -83,15 +83,15 @@
 	if(H.mind)
 		switch (shapeshiftchoice)
 			if("Zad")
-				H.mind.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/crow/witch)
+				H.mind.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/witch/crow)
 			if("Cat")
-				H.mind.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/cat)
+				H.mind.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/witch/cat)
 			if("Cat (Black)")
-				H.mind.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/cat/black)
+				H.mind.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/witch/cat/black)
 			if("Bat")
-				H.mind.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/bat/witch)
+				H.mind.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/witch/bat)
 			if("Lesser Volf")
-				H.mind.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/lesser_wolf)
+				H.mind.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/witch/lesser_wolf)
 			
 		switch (classchoice)
 			if("Old Magick")
@@ -119,49 +119,67 @@
 // Witch transformation spells - have do_after on both transform and revert, plus 1 minute cooldown
 /obj/effect/proc_holder/spell/targeted/shapeshift/witch
 	invocation = ""
-	gesture_required = TRUE
-	chargetime = 5 SECONDS  // Do-after for transforming
-	recharge_time = 1 MINUTES  // 1 minute cooldown
+	invocation_type = "none"
+	gesture_required = FALSE
+	recharge_time = 1 MINUTES
 	cooldown_min = 1 MINUTES
-	knockout_on_death = 15 SECONDS
+	knockout_on_death = 0  // Override per-form below
 	die_with_shapeshifted_form = FALSE
+	revert_on_death = TRUE
 	show_true_name = FALSE
 	convert_damage = FALSE
 	do_gibs = FALSE
 
+/obj/effect/proc_holder/spell/targeted/shapeshift/witch/cast(list/targets, mob/user = usr)
+	user.visible_message(span_warning("[user] begins to twist and contort!"), span_notice("I begin to transform..."))
+	return ..()
+
 /obj/effect/proc_holder/spell/targeted/shapeshift/witch/Shapeshift(mob/living/caster)
-	// Do-after handled by chargetime
+	// Do-after before transforming
+	if(!do_after(caster, 5 SECONDS, target = caster))
+		to_chat(caster, span_warning("Transformation interrupted!"))
+		revert_cast(caster)  // Refund the cooldown
+		return
+	
+	// Call parent to actually transform
 	return ..()
 
 /obj/effect/proc_holder/spell/targeted/shapeshift/witch/Restore(mob/living/shape)
 	// Add do-after for witches when reverting
+	shape.visible_message(span_warning("[shape] begins to shift back!"), span_notice("I begin to transform..."))
 	if(!do_after(shape, 5 SECONDS, target = shape))
 		to_chat(shape, span_warning("Transformation revert interrupted!"))
+		revert_cast(shape)  // Refund the cooldown
 		return
 	
 	return ..()
 
-/obj/effect/proc_holder/spell/targeted/shapeshift/crow/witch
+// Only zad and bat get knockout on death
+/obj/effect/proc_holder/spell/targeted/shapeshift/witch/crow
+	name = "Zad Form"
 	overlay_state = "zad"
 	shifted_speed_increase = 1.15
 	shapeshift_type = /mob/living/simple_animal/hostile/retaliate/bat/crow
+	knockout_on_death = 15 SECONDS
 
-/obj/effect/proc_holder/spell/targeted/shapeshift/bat/witch
+/obj/effect/proc_holder/spell/targeted/shapeshift/witch/bat
+	name = "Bat Form"
 	overlay_state = "bat_transform"
 	shifted_speed_increase = 1.15
 	shapeshift_type = /mob/living/simple_animal/hostile/retaliate/bat
+	knockout_on_death = 15 SECONDS
 
-/obj/effect/proc_holder/spell/targeted/shapeshift/cat
+/obj/effect/proc_holder/spell/targeted/shapeshift/witch/cat
 	name = "Cat Form"
 	desc = ""
 	overlay_state = "cat_transform"
 	shifted_speed_increase = 1.35
 	shapeshift_type = /mob/living/simple_animal/pet/cat/witch_shifted
 
-/obj/effect/proc_holder/spell/targeted/shapeshift/cat/black
+/obj/effect/proc_holder/spell/targeted/shapeshift/witch/cat/black
 	shapeshift_type = /mob/living/simple_animal/pet/cat/rogue/black/witch_shifted
 
-/obj/effect/proc_holder/spell/targeted/shapeshift/lesser_wolf
+/obj/effect/proc_holder/spell/targeted/shapeshift/witch/lesser_wolf
 	name = "Lesser Volf Form"
 	desc = ""
 	overlay_state = "volf_transform"

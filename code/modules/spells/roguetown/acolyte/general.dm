@@ -620,6 +620,11 @@
 /obj/effect/proc_holder/spell/invoked/blood_heal/cast(list/targets, mob/user = usr)
 	if(ishuman(targets[1]))
 		var/mob/living/carbon/human/target = targets[1]
+		// Check if user is human before accessing dna
+		if(!ishuman(user))
+			to_chat(user, span_warning("I cannot transfer blood in this form!"))
+			revert_cast()
+			return FALSE
 		var/mob/living/carbon/human/UH = user
 		if(NOBLOOD in UH.dna?.species?.species_traits)
 			to_chat(UH, span_warning("I have no blood to provide."))
