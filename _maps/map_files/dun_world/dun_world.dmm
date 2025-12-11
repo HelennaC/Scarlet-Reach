@@ -12521,10 +12521,6 @@
 /obj/item/grown/log/tree/stick,
 /turf/open/water/swamp,
 /area/rogue/under/cavewet/bogcaves)
-"dvO" = (
-/obj/item/book/rogue/noc,
-/turf/open/floor/rogue/cobblerock,
-/area/rogue/outdoors/town)
 "dvQ" = (
 /obj/item/paper,
 /obj/item/paper{
@@ -68273,15 +68269,11 @@
 	dir = 10;
 	icon_state = "largetable"
 	},
-/obj/item/book/random/triple,
 /obj/item/natural/bundle/cloth{
 	amount = 8;
 	pixel_x = 4;
 	pixel_y = 3
 	},
-/obj/item/book/rogue/noc,
-/obj/item/book/rogue/arcyne,
-/obj/item/book/rogue/noc,
 /turf/open/floor/rogue/ruinedwood/spiral,
 /area/rogue/indoors/town/physician)
 "shz" = (
@@ -84370,10 +84362,6 @@
 /obj/structure/fluff/railing/corner/south_east,
 /turf/open/floor/rogue/grass,
 /area/rogue/outdoors/town)
-"wmt" = (
-/obj/item/book/rogue/noc,
-/turf/open/floor/rogue/cobble/mossy,
-/area/rogue/indoors/town/magician)
 "wmx" = (
 /obj/structure/mineral_door/wood/donjon{
 	dir = 4;
@@ -293295,7 +293283,7 @@ smL
 smL
 smL
 smL
-dvO
+exD
 exD
 exD
 exD
@@ -311839,7 +311827,7 @@ mKS
 mKS
 mKS
 mKS
-wmt
+mKS
 mKS
 oSt
 gkj
